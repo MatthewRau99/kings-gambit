@@ -1,4 +1,4 @@
-extends Resource
+extends Node
 
 class_name Piece
 
@@ -23,7 +23,7 @@ func _init(s, k, m, n):
 	movement = m
 	piece_name = n
 	
-func duplicatePiece() -> Resource:
+func duplicatePiece() -> Node:
 	var p = Piece.new(side, key, movement, piece_name)
 	p.obj = obj
 	p.pos = pos
