@@ -78,7 +78,6 @@ var pieceDict = {}
 
 func _ready():
 	initPieceDict()
-	print(pieceDict)
 	# grid will map the pieces in the game
 	grid.resize(num_squares)
 	draw_tiles()
@@ -237,13 +236,9 @@ func find_pawn_in_col(ch, y, side):
 			return y if grid[i].key == "P" else -1
 	return -1
 
-<<<<<<< HEAD
-
-func setup_pieces(_fen = "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
-=======
+#func setup_pieces(_fen = "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
 #var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
-func setup_pieces(_fen = default_fen):
->>>>>>> cdf7c83d572358a8197a68b835d12b6b9253ee61
+func setup_pieces(_fen =  "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
 	var parts = _fen.split(" ")
 	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
@@ -335,7 +330,7 @@ var rank = 8
 var file = 8
 
 func set_piece(name: String, i: int, castling: String):
-	var p = pieceDict[name]
+	var p = pieceDict[name].duplicatePiece()
 	print(p.key)
 	var key = p.key
 	if p.side == "B":
@@ -369,6 +364,7 @@ func set_piece(name: String, i: int, castling: String):
 
 func clear_board():
 	for i in num_squares:
+		print(i)
 		take_piece(grid[i], false)
 	cleared = true
 
@@ -376,6 +372,7 @@ func clear_board():
 func take_piece(p: Piece, emit = true):
 	if p == null:
 		return
+	print(p)
 	p.obj.get_parent().remove_child(p.obj)
 	grid[get_grid_index(p.pos.x, p.pos.y)] = null
 	set_halfmoves(0)

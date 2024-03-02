@@ -2,8 +2,6 @@ extends Resource
 
 class_name Piece
 
-	
-	
 
 var side : String # The Black or the white "B" or "W"
 # The key code used in notation (PRNBQK)
@@ -24,3 +22,13 @@ func _init(s, k, m, n):
 	key = k
 	movement = m
 	piece_name = n
+	
+func duplicatePiece() -> Resource:
+	var p = Piece.new(side, key, movement, piece_name)
+	p.obj = obj
+	p.pos = pos
+	p.new_pos = new_pos
+	p.tagged = tagged
+	return p
+	
+	
