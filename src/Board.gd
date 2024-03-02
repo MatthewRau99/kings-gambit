@@ -36,7 +36,7 @@ var highlighed_tiles = []
 
 var playerHand = Hand.new(
 	[
-	Piece.new("W", "P", "fmWfceF", "A"),
+	Piece.new("W", "P", "R", "A"),
 	Piece.new("W", "P", "fmWfceF", "B"),
 	Piece.new("W", "P", "fmWfceF", "C"),
 	Piece.new("W", "P", "fmWfceF", "D"),
