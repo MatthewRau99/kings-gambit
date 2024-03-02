@@ -50,6 +50,19 @@ text = "Move to ponder:"
 layout_mode = 2
 text = "e6e5"
 
+[node name="OptionButton" type="OptionButton" parent="VBox/HBox/VBox"]
+layout_mode = 2
+item_count = 4
+selected = 0
+popup/item_0/text = "chess"
+popup/item_0/id = 0
+popup/item_1/text = "fairy"
+popup/item_1/id = 1
+popup/item_2/text = "horde"
+popup/item_2/id = 2
+popup/item_3/text = "shogi"
+popup/item_3/id = 3
+
 [node name="Menu" type="VBoxContainer" parent="VBox/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -177,6 +190,7 @@ show_hidden_files = true
 visible = false
 
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]
+[connection signal="item_selected" from="VBox/HBox/VBox/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="button_down" from="VBox/HBox/Menu/Next/Flip" to="." method="_on_Flip_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Load" to="." method="_on_Load_button_down"]
 [connection signal="button_down" from="VBox/HBox/Menu/Save" to="." method="_on_Save_button_down"]

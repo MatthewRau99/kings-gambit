@@ -30,4 +30,5 @@ window/size/viewport_height=980
 
 [rendering]
 
+renderer/rendering_method="gl_compatibility"
 environment/defaults/default_environment="res://default_env.tres"

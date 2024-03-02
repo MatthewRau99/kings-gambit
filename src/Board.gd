@@ -237,8 +237,13 @@ func find_pawn_in_col(ch, y, side):
 			return y if grid[i].key == "P" else -1
 	return -1
 
+<<<<<<< HEAD
 
 func setup_pieces(_fen = "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
+=======
+#var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+func setup_pieces(_fen = default_fen):
+>>>>>>> cdf7c83d572358a8197a68b835d12b6b9253ee61
 	var parts = _fen.split(" ")
 	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
@@ -326,6 +331,8 @@ func tag_piece(i: int):
 	if grid[i] != null:
 		grid[i].tagged = true
 
+var rank = 8
+var file = 8
 
 func set_piece(name: String, i: int, castling: String):
 	var p = pieceDict[name]
@@ -334,7 +341,7 @@ func set_piece(name: String, i: int, castling: String):
 	if p.side == "B":
 		key = key.to_lower()
 	@warning_ignore("integer_division")
-	p.pos = Vector2(i % 8, i / 8)
+	p.pos = Vector2(i % file, i / rank)
 	p.obj = Pieces.get_piece(p.key, p.side)
 	grid[i] = p
 	$Grid.get_child(i).add_child(p.obj)
@@ -710,3 +717,4 @@ func _on_HighlightTimer_timeout():
 	if highlighed_tiles.size() > 0:
 		highlight_square(highlighed_tiles[0])
 		$HighlightTimer.start()
+		
