@@ -676,27 +676,48 @@ func get_position_info(p: Piece, non_player_move, offset_divisor = square_width)
 	var ax = int(abs(x))
 	var ay = int(abs(y))
 	var p2 = get_piece_in_grid(p.new_pos.x, p.new_pos.y)
+	
+	var movement = p.movement
 	# Check for valid move
 	# Don't care about bounds of the board since the piece will be released if outside
 	var ok = false
 	var check_path = true
+	
+	if movement.contains("fmWfceF"):
+		var tempOk = false
+		if p.side == "B":
+			tempOk = y == 1
+			if p.pos.y == 1 and y == 2:
+				tempOk = true
+				passant_pawn = p
+			passant = y == 1 and ax == 1 and p.pos.y == 4
+		else:
+			tempOk = y == -1
+			if p.pos.y == 6 and -2 == y:
+				tempOk = true
+				passant_pawn = p
+			passant = y == -1 and ax == 1 and p.pos.y == 3
+		# Check for valid horizontal move
+		if tempOk:
+			tempOk = ax == 0 and p2 == null or ay == 1 and ax == 1
+		ok = ok or tempOk
 	match p.key:
-		"P": # Check for valid move of pawn
-			if p.side == "B":
-				ok = y == 1
-				if p.pos.y == 1 and y == 2:
-					ok = true
-					passant_pawn = p
-				passant = y == 1 and ax == 1 and p.pos.y == 4
-			else:
-				ok = y == -1
-				if p.pos.y == 6 and -2 == y:
-					ok = true
-					passant_pawn = p
-				passant = y == -1 and ax == 1 and p.pos.y == 3
-			# Check for valid horizontal move
-			if ok:
-				ok = ax == 0 and p2 == null or ay == 1 and ax == 1
+		#"P": # Check for valid move of pawn
+			#if p.side == "B":
+				#ok = y == 1
+				#if p.pos.y == 1 and y == 2:
+					#ok = true
+					#passant_pawn = p
+				#passant = y == 1 and ax == 1 and p.pos.y == 4
+			#else:
+				#ok = y == -1
+				#if p.pos.y == 6 and -2 == y:
+					#ok = true
+					#passant_pawn = p
+				#passant = y == -1 and ax == 1 and p.pos.y == 3
+			## Check for valid horizontal move
+			#if ok:
+				#ok = ax == 0 and p2 == null or ay == 1 and ax == 1
 		"R": # Check for valid horizontal or vertical move of rook
 			ok = ax > 0 and ay == 0 or ax == 0 and ay > 0
 		"B": # Check for valid diagonal move of bishop
