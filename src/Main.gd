@@ -515,4 +515,3 @@ func _on_option_button_item_selected(index):
 	print("New mode: " + modes[index])
 	state = VARIANT_SWAP
 	engine.send_packet("setoption name UCI_Variant value " + modes[index])
-	

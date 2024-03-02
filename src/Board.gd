@@ -9,6 +9,8 @@ signal halfmove
 signal fullmove
 signal taken
 
+@onready var engine = get_node("./../../Engine")
+
 @export var square_width = 64 # pixels (same as chess piece images)
 @export var white: Color # Square color
 @export var grey: Color # Square color
@@ -19,6 +21,7 @@ const width = 8
 const height = 8
 enum { SIDE, UNDER }
 
+var variantName = ""
 var grid : Array # Map of what pieces are placed on the board
 var r_count = 0 # Rook counter
 var R_count = 0 # Rook counter
@@ -85,6 +88,7 @@ func _ready():
 	# Set board layout using Forsyth Edwards encoded string
 	#setup_pieces("r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21")
 	setup_pieces()
+	generate_variant()	
 	#test_square_is_white()
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
@@ -94,11 +98,36 @@ func _ready():
 	#highlight_square(highlighed_tiles[0])
 	#test_pgn_to_long_conversion()
 
+func generate_variant():
+	var variantString = ""
+	# Variant name
+	variantName = "variant" + str(Time.get_ticks_msec())
+	variantString += "[" + variantName + ":chess]\n"
+	# Starting Fen state
+	variantString += "startFen = " + get_fen("W") + "\n"
+	
+	var i = 1
+	for key in pieceDict:
+		var piece = pieceDict[key]
+		variantString += "customPiece" + str(i) + " = " + piece.piece_name + ":" + piece.movement + "\n"
+		i += 1
+	print(variantString)
+	
+	var file = FileAccess.open("./engine/variants.ini", FileAccess.WRITE)
+	file.store_string(variantString)
+	file.close()
+	#main.loadVariant("./engine/variants.ini", variantName)
+	
+	
+func addVariant():
+	print("test")
+	engine.send_packet("setoption name VariantPath value ./engine/variants.ini")
+	engine.send_packet("setoption name UCI_Variant value " + variantName)
+
 func initPieceDict():
 	for piece in playerHand.pieces:
 		if !pieceDict.has(piece.piece_name):
 			pieceDict[piece.piece_name] = piece
-			print(pieceDict[piece.piece_name].key)
 	for piece in botHand.pieces:
 		if !pieceDict.has(piece.piece_name):
 			pieceDict[piece.piece_name] = piece
@@ -288,7 +317,7 @@ func get_fen(next_move):
 				if ns > 0:
 					_fen += str(ns)
 					ns = 0
-				var key = p.key
+				var key = p.piece_name
 				if p.side == "B":
 					key = key.to_lower()
 				_fen += key
@@ -331,7 +360,6 @@ var file = 8
 
 func set_piece(name: String, i: int, castling: String):
 	var p = pieceDict[name].duplicatePiece()
-	print(p.key)
 	var key = p.key
 	if p.side == "B":
 		key = key.to_lower()
@@ -364,7 +392,6 @@ func set_piece(name: String, i: int, castling: String):
 
 func clear_board():
 	for i in num_squares:
-		print(i)
 		take_piece(grid[i], false)
 	cleared = true
 
@@ -372,7 +399,6 @@ func clear_board():
 func take_piece(p: Piece, emit = true):
 	if p == null:
 		return
-	print(p)
 	p.obj.get_parent().remove_child(p.obj)
 	grid[get_grid_index(p.pos.x, p.pos.y)] = null
 	set_halfmoves(0)
