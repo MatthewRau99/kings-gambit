@@ -18,7 +18,7 @@ var promote_to = ""
 var state = IDLE
 
 # states
-enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN }
+enum { IDLE, CONNECTING, STARTING, PLAYER_TURN, ENGINE_TURN, PLAYER_WIN, ENGINE_WIN, VARIANT_SWAP }
 # events
 enum { CONNECT, NEW_GAME, DONE, ERROR, MOVE }
 
@@ -26,12 +26,14 @@ func _ready():
 	board.connect("clicked", Callable(self, "piece_clicked"))
 	board.connect("unclicked", Callable(self, "piece_unclicked"))
 	board.connect("moved", Callable(self, "mouse_moved"))
+
 	connect("mouse_entered", Callable(self, "mouse_entered"))
 	board.connect("taken", Callable(self, "stow_taken_piece"))
 	promote.connect("promotion_picked", Callable(self, "promote_pawn"))
 	show_transport_buttons(false)
 	show_last_move()
 	ponder() # Hide it
+	handle_state(NEW_GAME)
 
 
 func handle_state(event, msg = ""):
@@ -80,7 +82,7 @@ func handle_state(event, msg = ""):
 		PLAYER_TURN:
 			match event:
 				DONE:
-					print(msg)
+					get_new_game_info(msg)
 				MOVE:
 					ponder()
 					# msg should contain the player move
@@ -109,7 +111,15 @@ func handle_state(event, msg = ""):
 					print("Engine won")
 					state = IDLE
 					set_next_color()
+		VARIANT_SWAP:
+			match event:
+				DONE: 
+					reset_board()
+					print(msg)
 
+func get_new_game_info(msg : String):
+	print(msg.split(" "))
+	pass
 
 func prompt_engine(move = ""):
 	fen = board.get_fen("b")
@@ -498,3 +508,11 @@ func _on_engine_done(ok, packet):
 		handle_state(DONE, packet)
 	else:
 		handle_state(ERROR)
+
+var modes = ["chess", "fairy", "horde", "shogi"]
+
+func _on_option_button_item_selected(index):
+	print("New mode: " + modes[index])
+	state = VARIANT_SWAP
+	engine.send_packet("setoption name UCI_Variant value " + modes[index])
+	
