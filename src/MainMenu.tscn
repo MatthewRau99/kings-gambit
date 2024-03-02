@@ -1,0 +1,62 @@
+[gd_scene load_steps=7 format=3 uid="uid://bdpxyvsfhcrxs"]
+
+[ext_resource type="Texture2D" uid="uid://bjcnrybitqru6" path="res://assets/main_menu/title.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://b0ufxusq2j4bp" path="res://assets/main_menu/label_continue.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://byy12ax81x8b5" path="res://assets/main_menu/label_new_game.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://bf0cbjcgi756j" path="res://assets/main_menu/label_options.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://dd6xf76m27qlo" path="res://assets/main_menu/version.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://cl1s22re7pva8" path="res://assets/main_menu/characters.png" id="6"]
+
+[node name="MainMenu" type="MarginContainer"]
+offset_right = 1074.0
+offset_bottom = 339.0
+mouse_filter = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 0
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="Logo" type="TextureRect" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1")
+stretch_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Continue" type="TextureRect" parent="HBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2")
+stretch_mode = 3
+
+[node name="NewGame" type="TextureRect" parent="HBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("3")
+stretch_mode = 3
+
+[node name="Options" type="TextureRect" parent="HBoxContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4")
+stretch_mode = 3
+
+[node name="Version" type="TextureRect" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("5")
+stretch_mode = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 0
+
+[node name="Characters" type="TextureRect" parent="HBoxContainer/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("6")
+stretch_mode = 3

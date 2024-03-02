@@ -369,8 +369,7 @@ func set_next_color(is_white = true):
 
 
 func _on_Load_button_down():
-	fd.mode = FileDialog.FILE_MODE_OPEN_FILE
-	fd.popup_centered()
+	get_tree().change_scene_to_file("res://MainMenu.tscn")
 
 
 func _on_Save_button_down():

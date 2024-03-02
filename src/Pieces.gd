@@ -49,17 +49,10 @@ func setup():
 		files.sort()
 		#print(files)
 		# Now apply the images to the sprite textures
-		var i = 0
 		pieceImages = {}
 		for file in files:
 			var key = make_key(file.get_basename())
 			pieceImages[key] = "res://pieces/" + file
-			#var sprite = get_child(i)
-			#sprite.name = file.get_basename()
-			#var img = load("res://pieces/" + file)
-			#sprite.texture = img
-			#sprite.position.x = i *64
-			#i += 1
 		print("PIECES:" + str(pieceImages))
 		return pieceImages
 		
