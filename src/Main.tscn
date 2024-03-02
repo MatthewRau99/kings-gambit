@@ -80,7 +80,7 @@ icon = SubResource("1")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Load" type="Button" parent="VBox/HBox/Menu"]
+[node name="Modify" type="Button" parent="VBox/HBox/Menu"]
 layout_mode = 2
 text = "Modify"
 
@@ -188,7 +188,7 @@ visible = false
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]
 [connection signal="item_selected" from="VBox/HBox/VBox/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="button_down" from="VBox/HBox/Menu/Next/Flip" to="." method="_on_Flip_button_down"]
-[connection signal="button_down" from="VBox/HBox/Menu/Load" to="." method="_on_Load_button_down"]
+[connection signal="button_down" from="VBox/HBox/Menu/Modify" to="." method="_on_Load_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/Begin" to="." method="_on_Begin_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/Forward" to="." method="_on_Forward_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/End" to="." method="_on_End_button_down"]
