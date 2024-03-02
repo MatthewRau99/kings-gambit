@@ -102,25 +102,22 @@ func generate_variant():
 	var variantString = ""
 	# Variant name
 	variantName = "variant" + str(Time.get_ticks_msec())
-	variantString += "[" + variantName + ":chess]\n"
+	variantString += "[" + variantName + "]\n"
 	# Starting Fen state
-	variantString += "startFen = " + get_fen("W") + "\n"
+	variantString += "startFen = " + get_fen("w") + "\n"
 	
 	var i = 1
 	for key in pieceDict:
 		var piece = pieceDict[key]
-		variantString += "customPiece" + str(i) + " = " + piece.piece_name + ":" + piece.movement + "\n"
+		variantString += "customPiece" + str(i) + " = " + piece.piece_name.to_lower() + ":" + piece.movement + "\n"
 		i += 1
 	print(variantString)
 	
 	var file = FileAccess.open("./engine/variants.ini", FileAccess.WRITE)
 	file.store_string(variantString)
 	file.close()
-	#main.loadVariant("./engine/variants.ini", variantName)
-	
 	
 func addVariant():
-	print("test")
 	engine.send_packet("setoption name VariantPath value ./engine/variants.ini")
 	engine.send_packet("setoption name UCI_Variant value " + variantName)
 
@@ -267,8 +264,9 @@ func find_pawn_in_col(ch, y, side):
 
 #func setup_pieces(_fen = "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
 #var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
-func setup_pieces(_fen =  "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
+func setup_pieces(_fen =  "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 1"):
 	var parts = _fen.split(" ")
+	print(parts)
 	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
 	r_count = 0
@@ -299,6 +297,7 @@ func setup_pieces(_fen =  "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 
 	# Set fullmoves value
 	if parts.size() >= 6 and parts[5].is_valid_int():
 		set_fullmoves(parts[5].to_int())
+		print(fullmoves)
 	return next_move_white
 
 
@@ -326,14 +325,15 @@ func get_fen(next_move):
 			ns = 0
 		if y < 7:
 			_fen += "/"
-	if is_tagged(0) and is_tagged(4):
-		castling += "q"
-	if is_tagged(4) and is_tagged(7):
-		castling += "k"
-	if is_tagged(56) and is_tagged(60):
-		castling += "Q"
-	if is_tagged(60) and is_tagged(63):
-		castling += "K"
+	#if is_tagged(0) and is_tagged(4):
+		#castling += "q"
+	#if is_tagged(4) and is_tagged(7):
+		#castling += "k"
+	#if is_tagged(56) and is_tagged(60):
+		#castling += "Q"
+	#if is_tagged(60) and is_tagged(63):
+		#castling += "K"
+	castling += "- "
 	var pas = "-"
 	var pos
 	if passant_pawn != null:
