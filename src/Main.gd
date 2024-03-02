@@ -42,6 +42,7 @@ func handle_state(event, msg = ""):
 			match event:
 				CONNECT:
 					var status = engine.start_udp_server()
+					print(status)
 					if status.started:
 						# Need some delay before connecting is possible
 						await get_tree().create_timer(0.5).timeout
@@ -53,6 +54,7 @@ func handle_state(event, msg = ""):
 				NEW_GAME:
 					# Keep piece arrangement and move counts.
 					if engine.server_pid > 0:
+						board.addVariant()
 						engine.send_packet("ucinewgame")
 						engine.send_packet("isready")
 						state = STARTING
@@ -92,7 +94,9 @@ func handle_state(event, msg = ""):
 		ENGINE_TURN:
 			match event:
 				DONE:
+					print("test")
 					var move = get_best_move(msg)
+					print(move)
 					if move != "":
 						move_engine_piece(move)
 						show_last_move(move)
@@ -100,6 +104,8 @@ func handle_state(event, msg = ""):
 					# Don't print the info spam
 					if !msg.begins_with("info"):
 						print(msg)
+				ERROR:
+					print("oh no")
 		PLAYER_WIN:
 			match event:
 				DONE:
@@ -516,4 +522,3 @@ func _on_option_button_item_selected(index):
 	print("New mode: " + modes[index])
 	state = VARIANT_SWAP
 	engine.send_packet("setoption name UCI_Variant value " + modes[index])
-	

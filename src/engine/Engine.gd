@@ -74,6 +74,7 @@ func send_packet(pkt: String):
 
 
 func _on_Timer_timeout():
+	print("timeout")
 	stop_udp_server()
 	emit_signal("done", false, "")
 

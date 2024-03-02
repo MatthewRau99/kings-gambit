@@ -9,14 +9,19 @@ signal halfmove
 signal fullmove
 signal taken
 
+@onready var engine = get_node("./../../Engine")
+
 @export var square_width = 64 # pixels (same as chess piece images)
 @export var white: Color # Square color
 @export var grey: Color # Square color
 @export var mod_color: Color # For highlighting squares
 
 const num_squares = 64
+const width = 8
+const height = 8
 enum { SIDE, UNDER }
 
+var variantName = ""
 var grid : Array # Map of what pieces are placed on the board
 var r_count = 0 # Rook counter
 var R_count = 0 # Rook counter
@@ -29,7 +34,53 @@ var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
 var cleared = true
 var highlighed_tiles = []
 
+var playerHand = Hand.new(
+	[
+	Piece.new("W", "P", "R", "A"),
+	Piece.new("W", "P", "fmWfceF", "B"),
+	Piece.new("W", "P", "fmWfceF", "C"),
+	Piece.new("W", "P", "fmWfceF", "D"),
+	Piece.new("W", "P", "fmWfceF", "E"),
+	Piece.new("W", "P", "fmWfceF", "F"),
+	Piece.new("W", "P", "fmWfceF", "G"),
+	Piece.new("W", "P", "fmWfceF", "H"),
+	Piece.new("W", "R", "R", "I"),
+	Piece.new("W", "N", "N", "J"),
+	Piece.new("W", "B", "B", "K"),
+	Piece.new("W", "Q", "Q", "L"),
+	Piece.new("W", "K", "K", "M"),
+	Piece.new("W", "B", "B", "N"),
+	Piece.new("W", "N", "N", "O"),
+	Piece.new("W", "R", "R", "P")
+	]
+)
+
+
+var botHand = Hand.new(
+	[
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "R", "R", "r"),
+	Piece.new("B", "N", "N", "s"),
+	Piece.new("B", "B", "B", "t"),
+	Piece.new("B", "Q", "Q", "u"),
+	Piece.new("B", "K", "K", "v"),
+	Piece.new("B", "B", "B", "t"),
+	Piece.new("B", "N", "N", "s"),
+	Piece.new("B", "R", "R", "r")
+	]
+)
+
+var pieceDict = {}
+
 func _ready():
+	initPieceDict()
 	# grid will map the pieces in the game
 	grid.resize(num_squares)
 	draw_tiles()
@@ -37,6 +88,7 @@ func _ready():
 	# Set board layout using Forsyth Edwards encoded string
 	#setup_pieces("r1b1k2r/5pp1/p3p2p/2b4P/2BnnKP1/1P41q/P1PP4/1RBQ4 w qk - 43 21")
 	setup_pieces()
+	generate_variant()	
 	#test_square_is_white()
 	#test_highlight_square()
 	#print(position_to_move(Vector2(0, 0)))
@@ -45,6 +97,37 @@ func _ready():
 	#$HighlightTimer.start()
 	#highlight_square(highlighed_tiles[0])
 	#test_pgn_to_long_conversion()
+
+func generate_variant():
+	var variantString = ""
+	# Variant name
+	variantName = "variant" + str(Time.get_ticks_msec())
+	variantString += "[" + variantName + "]\n"
+	# Starting Fen state
+	variantString += "startFen = " + get_fen("w") + "\n"
+	
+	var i = 1
+	for key in pieceDict:
+		var piece = pieceDict[key]
+		variantString += "customPiece" + str(i) + " = " + piece.piece_name.to_lower() + ":" + piece.movement + "\n"
+		i += 1
+	print(variantString)
+	
+	var file = FileAccess.open("./engine/variants.ini", FileAccess.WRITE)
+	file.store_string(variantString)
+	file.close()
+	
+func addVariant():
+	engine.send_packet("setoption name VariantPath value ./engine/variants.ini")
+	engine.send_packet("setoption name UCI_Variant value " + variantName)
+
+func initPieceDict():
+	for piece in playerHand.pieces:
+		if !pieceDict.has(piece.piece_name):
+			pieceDict[piece.piece_name] = piece
+	for piece in botHand.pieces:
+		if !pieceDict.has(piece.piece_name):
+			pieceDict[piece.piece_name] = piece
 
 #func _gui_input(event):
 #	print("Main receive Event : ", event)
@@ -155,7 +238,7 @@ func find_piece_in_col(ch, key, side):
 
 
 func find_piece_in_grid(key, side, pos: Vector2):
-	for i in 64:
+	for i in num_squares:
 		var p = grid[i]
 		if p != null and p.key == key and p.side == side:
 			# See if piece can move to destination
@@ -179,10 +262,11 @@ func find_pawn_in_col(ch, y, side):
 			return y if grid[i].key == "P" else -1
 	return -1
 
+#func setup_pieces(_fen = "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
 #var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
-func setup_pieces(_fen = default_fen):
-	print("BOARD FEN: "+_fen)
+func setup_pieces(_fen =  "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 1"):
 	var parts = _fen.split(" ")
+	print(parts)
 	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
 	r_count = 0
@@ -214,6 +298,7 @@ func setup_pieces(_fen = default_fen):
 	# Set fullmoves value
 	if parts.size() >= 6 and parts[5].is_valid_int():
 		set_fullmoves(parts[5].to_int())
+		print(fullmoves)
 	return next_move_white
 
 
@@ -232,7 +317,7 @@ func get_fen(next_move):
 				if ns > 0:
 					_fen += str(ns)
 					ns = 0
-				var key = p.key
+				var key = p.piece_name
 				if p.side == "B":
 					key = key.to_lower()
 				_fen += key
@@ -241,14 +326,15 @@ func get_fen(next_move):
 			ns = 0
 		if y < 7:
 			_fen += "/"
-	if is_tagged(0) and is_tagged(4):
-		castling += "q"
-	if is_tagged(4) and is_tagged(7):
-		castling += "k"
-	if is_tagged(56) and is_tagged(60):
-		castling += "Q"
-	if is_tagged(60) and is_tagged(63):
-		castling += "K"
+	#if is_tagged(0) and is_tagged(4):
+		#castling += "q"
+	#if is_tagged(4) and is_tagged(7):
+		#castling += "k"
+	#if is_tagged(56) and is_tagged(60):
+		#castling += "Q"
+	#if is_tagged(60) and is_tagged(63):
+		#castling += "K"
+	castling += "- "
 	var pas = "-"
 	var pos
 	if passant_pawn != null:
@@ -273,10 +359,11 @@ func tag_piece(i: int):
 var rank = 8
 var file = 8
 
-func set_piece(key: String, i: int, castling: String):
-	var p = Piece.new()
-	p.key = key.to_upper()
-	p.side = "W" if "a" > key else "B"
+func set_piece(name: String, i: int, castling: String):
+	var p = pieceDict[name].duplicatePiece()
+	var key = p.key
+	if p.side == "B":
+		key = key.to_lower()
 	@warning_ignore("integer_division")
 	p.pos = Vector2(i % file, i / rank)
 	p.obj = Pieces.get_piece(p.key, p.side)
@@ -305,7 +392,7 @@ func set_piece(key: String, i: int, castling: String):
 
 
 func clear_board():
-	for i in 64:
+	for i in num_squares:
 		take_piece(grid[i], false)
 	cleared = true
 
@@ -339,9 +426,9 @@ func draw_tiles():
 	grey_square.color = grey
 	# Add squares to grid
 	var odd = true
-	for y in 8:
+	for y in height:
 		odd = !odd
-		for x in 8:
+		for x in width:
 			odd = !odd
 			if odd:
 				add_square(white_square.duplicate(), x, y)
@@ -352,7 +439,7 @@ func draw_tiles():
 func add_square(s: ColorRect, x: int, y: int):
 	s.connect("gui_input", Callable(self, "square_event").bind(x, y))
 	if x == 0:
-		add_label(s, SIDE, str(8 - y))
+		add_label(s, SIDE, str(height - y))
 	if y == 7:
 		add_label(s, UNDER, char(97 + x))
 	$Grid.add_child(s)
