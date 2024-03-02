@@ -181,12 +181,14 @@ func find_pawn_in_col(ch, y, side):
 
 #var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
 func setup_pieces(_fen = default_fen):
+	print("BOARD FEN: "+_fen)
 	var parts = _fen.split(" ")
 	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
 	r_count = 0
 	R_count = 0
 	var i = 0
+	print(parts[0])
 	for ch in parts[0]:
 		match ch:
 			"/": # Next rank

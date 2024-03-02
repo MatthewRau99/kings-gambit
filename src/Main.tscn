@@ -52,7 +52,7 @@ text = "e6e5"
 
 [node name="OptionButton" type="OptionButton" parent="VBox/HBox/VBox"]
 layout_mode = 2
-item_count = 4
+item_count = 5
 selected = 0
 popup/item_0/text = "chess"
 popup/item_0/id = 0
@@ -60,8 +60,10 @@ popup/item_1/text = "fairy"
 popup/item_1/id = 1
 popup/item_2/text = "horde"
 popup/item_2/id = 2
-popup/item_3/text = "shogi"
+popup/item_3/text = "pawnsonly"
 popup/item_3/id = 3
+popup/item_4/text = "cornerrrook"
+popup/item_4/id = 4
 
 [node name="Menu" type="VBoxContainer" parent="VBox/HBox"]
 layout_mode = 2
