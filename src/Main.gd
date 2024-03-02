@@ -115,7 +115,7 @@ func handle_state(event, msg = ""):
 			match event:
 				DONE: 
 					reset_board()
-					print(msg)
+					handle_state(NEW_GAME)
 
 func get_new_game_info(msg : String):
 	print(msg.split(" "))
@@ -338,9 +338,6 @@ func _on_Board_halfmove(n):
 
 func reset_board():
 	if !board.cleared:
-		state = IDLE
-		board.clear_board()
-		board.setup_pieces()
 		board.halfmoves = 0
 		board.fullmoves = 0
 		show_last_move()

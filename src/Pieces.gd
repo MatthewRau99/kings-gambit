@@ -12,6 +12,9 @@ func get_piece(key = "P", side = "W"):
 		i += 6
 	var p = get_child(i).duplicate()
 	p.position = Vector2(0, 0)
+	if side == "B":
+		key = key.to_lower()
+	p.texture = load(pieceImages[key])
 	return p
 
 
@@ -26,7 +29,7 @@ func promote(p: Piece, promote_to = "q"):
 
 # Edit this to start in the game or as a Tool script when the scene is loaded
 func _ready():
-	#setup()
+	setup()
 	visible = false # It is set up as an Autoloaded scene so want to hide it
 
 
@@ -49,12 +52,23 @@ func setup():
 		var i = 0
 		pieceImages = {}
 		for file in files:
-			pieceImages[file.get_basename()] = "res://pieces/" + file
-			var sprite = get_child(i)
-			sprite.name = file.get_basename()
-			var img = load("res://pieces/" + file)
-			sprite.texture = img
-			sprite.position.x = i *64
-			i += 1
+			var key = make_key(file.get_basename())
+			pieceImages[key] = "res://pieces/" + file
+			#var sprite = get_child(i)
+			#sprite.name = file.get_basename()
+			#var img = load("res://pieces/" + file)
+			#sprite.texture = img
+			#sprite.position.x = i *64
+			#i += 1
 		print("PIECES:" + str(pieceImages))
 		return pieceImages
+		
+func make_key(file : String):
+	if file.begins_with("white"):
+		if file.contains("Knight"):
+			return "N"
+		return file[5]
+	else:
+		if file.contains("Knight"):
+			return "n"
+		return file[5].to_lower()
