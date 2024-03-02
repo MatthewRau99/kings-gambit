@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3 uid="uid://bdpxyvsfhcrxs"]
+
+[ext_resource type="Texture2D" uid="uid://bqxg0ed8746tc" path="res://pieces/whiteTower.png" id="1_j7smr"]
+[ext_resource type="Script" path="res://mod1.gd" id="2_uyrbd"]
+[ext_resource type="Script" path="res://mod2.gd" id="3_uc4h6"]
+[ext_resource type="Script" path="res://mod3.gd" id="4_snhfs"]
+
+[node name="MainMenu" type="MarginContainer"]
+offset_right = 1074.0
+offset_bottom = 339.0
+mouse_filter = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Choose your mod[/center]"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 0
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/MarginContainer/CenterContainer/MarginContainer"]
+position = Vector2(35, -27)
+scale = Vector2(2.03333, 2.34444)
+texture = ExtResource("1_j7smr")
+script = ExtResource("2_uyrbd")
+
+[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/MarginContainer3"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer3/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/MarginContainer3/CenterContainer/MarginContainer"]
+position = Vector2(35, -27)
+scale = Vector2(2.03333, 2.34444)
+texture = ExtResource("1_j7smr")
+script = ExtResource("3_uc4h6")
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer/MarginContainer2/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/MarginContainer2/CenterContainer/MarginContainer"]
+position = Vector2(35, -27)
+scale = Vector2(2.03333, 2.34444)
+texture = ExtResource("1_j7smr")
+script = ExtResource("4_snhfs")

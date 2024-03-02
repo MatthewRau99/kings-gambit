@@ -12,7 +12,7 @@
 [sub_resource type="ImageTexture" id="1"]
 
 [node name="Main" type="MarginContainer"]
-custom_minimum_size = Vector2(600, 600)
+custom_minimum_size = Vector2(1080, 600)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -54,7 +54,7 @@ text = "e6e5"
 
 [node name="OptionButton" type="OptionButton" parent="VBox/HBox/VBox"]
 layout_mode = 2
-item_count = 4
+item_count = 5
 selected = 0
 popup/item_0/text = "chess"
 popup/item_0/id = 0
@@ -62,8 +62,10 @@ popup/item_1/text = "fairy"
 popup/item_1/id = 1
 popup/item_2/text = "horde"
 popup/item_2/id = 2
-popup/item_3/text = "shogi"
+popup/item_3/text = "pawnsonly"
 popup/item_3/id = 3
+popup/item_4/text = "cornerrrook"
+popup/item_4/id = 4
 
 [node name="Menu" type="VBoxContainer" parent="VBox/HBox"]
 layout_mode = 2
@@ -82,13 +84,9 @@ icon = SubResource("1")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Load" type="Button" parent="VBox/HBox/Menu"]
+[node name="Modify" type="Button" parent="VBox/HBox/Menu"]
 layout_mode = 2
-text = "Load"
-
-[node name="Save" type="Button" parent="VBox/HBox/Menu"]
-layout_mode = 2
-text = "Save"
+text = "Modify"
 
 [node name="Options" type="VBoxContainer" parent="VBox/HBox"]
 layout_mode = 2
@@ -194,8 +192,7 @@ visible = false
 [connection signal="button_down" from="VBox/HBox/VBox/Start" to="." method="_on_Start_button_down"]
 [connection signal="item_selected" from="VBox/HBox/VBox/OptionButton" to="." method="_on_option_button_item_selected"]
 [connection signal="button_down" from="VBox/HBox/Menu/Next/Flip" to="." method="_on_Flip_button_down"]
-[connection signal="button_down" from="VBox/HBox/Menu/Load" to="." method="_on_Load_button_down"]
-[connection signal="button_down" from="VBox/HBox/Menu/Save" to="." method="_on_Save_button_down"]
+[connection signal="button_down" from="VBox/HBox/Menu/Modify" to="." method="_on_Load_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/Begin" to="." method="_on_Begin_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/Forward" to="." method="_on_Forward_button_down"]
 [connection signal="button_down" from="VBox/HBox/Options/TB/End" to="." method="_on_End_button_down"]

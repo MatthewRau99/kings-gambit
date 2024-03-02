@@ -272,6 +272,7 @@ func setup_pieces(_fen =  "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 
 	r_count = 0
 	R_count = 0
 	var i = 0
+	print(parts[0])
 	for ch in parts[0]:
 		match ch:
 			"/": # Next rank

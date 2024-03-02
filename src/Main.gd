@@ -47,6 +47,7 @@ func handle_state(event, msg = ""):
 						# Need some delay before connecting is possible
 						await get_tree().create_timer(0.5).timeout
 						engine.send_packet("uci")
+						engine.send_packet("setoption name VariantPath value engine/og.ini" )
 						state = CONNECTING
 					else:
 						alert(status.error)
@@ -120,8 +121,10 @@ func handle_state(event, msg = ""):
 		VARIANT_SWAP:
 			match event:
 				DONE: 
-					reset_board()
-					print(msg)
+					var newFen = " ".join(msg.split(" ").slice(13,len(msg)))
+					print("NEWWWW "+newFen)
+					reset_board(newFen)
+					handle_state(NEW_GAME)
 
 func get_new_game_info(msg : String):
 	print(msg.split(" "))
@@ -341,12 +344,8 @@ func _on_Board_halfmove(n):
 		alert("It's a draw!")
 		state = IDLE
 
-
-func reset_board():
+func reset_board(newFen = null):
 	if !board.cleared:
-		state = IDLE
-		board.clear_board()
-		board.setup_pieces()
 		board.halfmoves = 0
 		board.fullmoves = 0
 		show_last_move()
@@ -354,7 +353,10 @@ func reset_board():
 		set_next_color()
 		state = IDLE
 		board.clear_board()
-		board.setup_pieces()
+		if (newFen != null):
+			board.setup_pieces(newFen)
+		else:
+			board.setup_pieces()
 		for node in $VBox/WhitePieces.get_children():
 			node.queue_free()
 		for node in $VBox/BlackPieces.get_children():
@@ -378,8 +380,7 @@ func set_next_color(is_white = true):
 
 
 func _on_Load_button_down():
-	fd.mode = FileDialog.FILE_MODE_OPEN_FILE
-	fd.popup_centered()
+	get_tree().change_scene_to_file("res://MainMenu.tscn")
 
 
 func _on_Save_button_down():
@@ -515,7 +516,7 @@ func _on_engine_done(ok, packet):
 	else:
 		handle_state(ERROR)
 
-var modes = ["chess", "fairy", "horde", "shogi"]
+var modes = ["chess", "fairy", "horde", "pawnsonly", "cornerrook"]
 
 func _on_option_button_item_selected(index):
 	print("New mode: " + modes[index])
