@@ -15,6 +15,8 @@ signal taken
 @export var mod_color: Color # For highlighting squares
 
 const num_squares = 64
+const width = 8
+const height = 8
 enum { SIDE, UNDER }
 
 var grid : Array # Map of what pieces are placed on the board
@@ -29,7 +31,54 @@ var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
 var cleared = true
 var highlighed_tiles = []
 
+var playerHand = Hand.new(
+	[
+	Piece.new("W", "P", "fmWfceF", "A"),
+	Piece.new("W", "P", "fmWfceF", "B"),
+	Piece.new("W", "P", "fmWfceF", "C"),
+	Piece.new("W", "P", "fmWfceF", "D"),
+	Piece.new("W", "P", "fmWfceF", "E"),
+	Piece.new("W", "P", "fmWfceF", "F"),
+	Piece.new("W", "P", "fmWfceF", "G"),
+	Piece.new("W", "P", "fmWfceF", "H"),
+	Piece.new("W", "R", "R", "I"),
+	Piece.new("W", "N", "N", "J"),
+	Piece.new("W", "B", "B", "K"),
+	Piece.new("W", "Q", "Q", "L"),
+	Piece.new("W", "K", "K", "M"),
+	Piece.new("W", "B", "B", "N"),
+	Piece.new("W", "N", "N", "O"),
+	Piece.new("W", "R", "R", "P")
+	]
+)
+
+
+var botHand = Hand.new(
+	[
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "P", "fmWfceF", "q"),
+	Piece.new("B", "R", "R", "r"),
+	Piece.new("B", "N", "N", "s"),
+	Piece.new("B", "B", "B", "t"),
+	Piece.new("B", "Q", "Q", "u"),
+	Piece.new("B", "K", "K", "v"),
+	Piece.new("B", "B", "B", "t"),
+	Piece.new("B", "N", "N", "s"),
+	Piece.new("B", "R", "R", "r")
+	]
+)
+
+var pieceDict = {}
+
 func _ready():
+	initPieceDict()
+	print(pieceDict)
 	# grid will map the pieces in the game
 	grid.resize(num_squares)
 	draw_tiles()
@@ -45,6 +94,15 @@ func _ready():
 	#$HighlightTimer.start()
 	#highlight_square(highlighed_tiles[0])
 	#test_pgn_to_long_conversion()
+
+func initPieceDict():
+	for piece in playerHand.pieces:
+		if !pieceDict.has(piece.piece_name):
+			pieceDict[piece.piece_name] = piece
+			print(pieceDict[piece.piece_name].key)
+	for piece in botHand.pieces:
+		if !pieceDict.has(piece.piece_name):
+			pieceDict[piece.piece_name] = piece
 
 #func _gui_input(event):
 #	print("Main receive Event : ", event)
@@ -155,7 +213,7 @@ func find_piece_in_col(ch, key, side):
 
 
 func find_piece_in_grid(key, side, pos: Vector2):
-	for i in 64:
+	for i in num_squares:
 		var p = grid[i]
 		if p != null and p.key == key and p.side == side:
 			# See if piece can move to destination
@@ -180,7 +238,7 @@ func find_pawn_in_col(ch, y, side):
 	return -1
 
 
-func setup_pieces(_fen = default_fen):
+func setup_pieces(_fen = "rstuvtsr/qqqqqqqq/8/8/8/8/ABCDEFGH/IJKLMNOP w KQkq - 0 0"):
 	var parts = _fen.split(" ")
 	var next_move_white = parts.size() < 2 or parts[1] == "w"
 	var castling = "" if parts.size() < 3 else parts[2]
@@ -269,10 +327,12 @@ func tag_piece(i: int):
 		grid[i].tagged = true
 
 
-func set_piece(key: String, i: int, castling: String):
-	var p = Piece.new()
-	p.key = key.to_upper()
-	p.side = "W" if "a" > key else "B"
+func set_piece(name: String, i: int, castling: String):
+	var p = pieceDict[name]
+	print(p.key)
+	var key = p.key
+	if p.side == "B":
+		key = key.to_lower()
 	@warning_ignore("integer_division")
 	p.pos = Vector2(i % 8, i / 8)
 	p.obj = Pieces.get_piece(p.key, p.side)
@@ -301,7 +361,7 @@ func set_piece(key: String, i: int, castling: String):
 
 
 func clear_board():
-	for i in 64:
+	for i in num_squares:
 		take_piece(grid[i], false)
 	cleared = true
 
@@ -335,9 +395,9 @@ func draw_tiles():
 	grey_square.color = grey
 	# Add squares to grid
 	var odd = true
-	for y in 8:
+	for y in height:
 		odd = !odd
-		for x in 8:
+		for x in width:
 			odd = !odd
 			if odd:
 				add_square(white_square.duplicate(), x, y)
@@ -348,7 +408,7 @@ func draw_tiles():
 func add_square(s: ColorRect, x: int, y: int):
 	s.connect("gui_input", Callable(self, "square_event").bind(x, y))
 	if x == 0:
-		add_label(s, SIDE, str(8 - y))
+		add_label(s, SIDE, str(height - y))
 	if y == 7:
 		add_label(s, UNDER, char(97 + x))
 	$Grid.add_child(s)
